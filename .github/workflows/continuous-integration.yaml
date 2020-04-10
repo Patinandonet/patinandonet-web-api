@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - uses: CallePuzzle/envvar-to-dotenv-action@develop
+      - uses: CallePuzzle/envvar-to-dotenv-action@0.1.0
         with:
           variableNames: APP_NAME,APP_ENV,APP_DEBUG,LOG_CHANNEL
 
