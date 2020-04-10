@@ -2,7 +2,7 @@ name: Continuous integration
 on:
   push:
     branches:
-      - integracion
+      - integration
 
 env:
   PROJECT_ID: ${{ secrets.INT_PROJECT_ID }}
