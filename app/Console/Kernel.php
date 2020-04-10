@@ -13,7 +13,15 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\WarmUp::class,
+        Commands\Activities\CreateUpdateActivities::class,
+        Commands\Activities\CreateUpdateDays::class,
+        Commands\Activities\CreateUpdateHours::class,
+        Commands\Activities\CreateUpdateHours::class,
+        Commands\Activities\CreateUpdateInstructors::class,
+        Commands\Activities\CreateUpdateLevels::class,
+        Commands\Activities\CreateUpdateTypes::class,
+        Commands\Activities\CreateUpdateZones::class,
     ];
 
     /**

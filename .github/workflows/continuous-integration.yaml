@@ -1,0 +1,71 @@
+name: Continuous integration
+on:
+  push:
+    branches:
+      - integracion
+
+env:
+  PROJECT_ID: ${{ secrets.INT_PROJECT_ID }}
+  REGION: ${{ secrets.REGION }}
+  SA_EMAIL: ${{ secrets.INT_SA_EMAIL }}
+  SA_KEY: ${{ secrets.INT_SA_KEY }}
+
+  SERVICE_NAME: patinando-int-api
+  DOMAIN_NAME: api.patinando.site
+  TERRAFORM_VERSION: 0.12.8
+
+  APP_NAME: patinando-api
+  APP_ENV: integration
+  APP_DEBUG: false
+  LOG_CHANNEL: stderr
+
+jobs:
+
+  setup-build-deploy:
+    name: Setup, Build, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - uses: CallePuzzle/envvar-to-dotenv-action@develop
+        with:
+          variableNames: APP_NAME,APP_ENV,APP_DEBUG,LOG_CHANNEL
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '278.0.0'
+          service_account_email: ${{ env.SA_EMAIL }}
+          service_account_key: ${{ env.SA_KEY }}
+          export_default_credentials: true
+
+      - name: gcloud set project
+        run: |
+          gcloud config set project $PROJECT_ID
+
+      - name: Build and push
+        run: |
+          gcloud builds submit -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
+
+      - name: 'Terraform Init'
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ env.TERRAFORM_VERSION }}
+          tf_actions_subcommand: 'init'
+          tf_actions_working_dir: 'deploy'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Terraform Apply'
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ env.TERRAFORM_VERSION }}
+          tf_actions_subcommand: 'apply'
+          tf_actions_working_dir: 'deploy'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_project: ${{ env.PROJECT_ID }}
+          TF_VAR_region: ${{ env.REGION }}
+          TF_VAR_run_service_name: ${{ env.SERVICE_NAME }}
+          TF_VAR_domain_name: ${{ env.DOMAIN_NAME }}
+          TF_VAR_image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}

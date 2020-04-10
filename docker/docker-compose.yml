@@ -1,0 +1,9 @@
+---
+version: '3'
+services:
+  patinando:
+    build: ../
+    ports:
+    - "8080:8080"
+    volumes:
+    - ../:/var/www/html

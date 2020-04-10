@@ -11,6 +11,10 @@
 |
 */
 
+/* @var $router \Illuminate\Support\Facades\Route */
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/get_activities.json', [
+    'as' => 'get_activities', 'uses' => 'GetActivitiesController'
+]);
