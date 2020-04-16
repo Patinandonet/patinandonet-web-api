@@ -75,7 +75,21 @@ class CreateUpdateActivities extends CreateUpdateSQLite
                 'free_places' => 10,
             ],
         ];
-        return array_merge($retiro, $rio);
+
+        $zone_id = Zone::GetFistByName("Velocidad (Cañaveral)")->id;
+        $canaveral = [
+            [
+                'zone_id' => $zone_id,
+                'level_id' => Level::GetFistByName("Velocidad Entrenamientos")->id,
+                'day_id' => Day::GetFistByName("Miércoles")->id,
+                'hour_id' => Hour::GetFirstByStartEnd("20:00", "21:30")->id,
+                'instructor_id' => Instructor::GetFistByName("Luigi")->id,
+                'places_available' => 14,
+                'free_places' => 10,
+            ],
+        ];
+
+        return array_merge($retiro, $rio, $canaveral);
     }
 
     public function handle()

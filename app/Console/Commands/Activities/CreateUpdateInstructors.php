@@ -25,6 +25,9 @@ class CreateUpdateInstructors extends CreateUpdateSQLite
             [
                 'name' => 'Rubs'
             ],
+            [
+                'name' => 'Luigi'
+            ],
         ];
     }
 }
