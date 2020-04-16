@@ -81,6 +81,11 @@ class CreateUpdateLevels extends CreateUpdateSQLite
                 'description' => '<p>Orientado a niños que ya tienen un buen control sobre los patines o han superado el nivel Medio, aprenderán y disfrutarán del hockey, slalom, velocidad, urbano, saltos, RollerVolley, RollerBaseball  que le harán mejorar su patinaje.</p>',
                 'type_id' => Type::GetFistByName("Escuelas para niños/as")->id,
             ],
+            [
+                'name' => 'Velocidad Entrenamientos',
+                'description' => '<p>Orientado a niños que ya tienen un buen control sobre los patines o han superado el nivel Medio, aprenderán y disfrutarán del hockey, slalom, velocidad, urbano, saltos, RollerVolley, RollerBaseball  que le harán mejorar su patinaje.</p>',
+                'type_id' => Type::GetFistByName("Escuela de velocidad")->id,
+            ],
         ];
     }
 }

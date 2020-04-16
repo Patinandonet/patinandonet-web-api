@@ -28,6 +28,9 @@ class CreateUpdateTypes extends CreateUpdateSQLite
             [
                 'name' => 'Escuelas para niños/as'
             ],
+            [
+                'name' => 'Escuela de velocidad'
+            ],
         ];
     }
 }
