@@ -102,7 +102,7 @@ data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
     members = [
-      "allUsers",
+      "serviceAccount:587624933799-compute@developer.gserviceaccount.com",
     ]
   }
 }
