@@ -36,56 +36,22 @@ variable "image" {
   type = string
 }
 
-variable "env_vars" {
-  type = list(object(
-    {
-      name  = string
-      value = string
-    }
-  ))
-  default = []
+data "google_compute_default_service_account" "default" {
+    project = var.project
 }
 
-resource "google_cloud_run_service" "default" {
-  name     = var.run_service_name
-  location = var.region
-  project  = var.project
+module "cloud_run" {
+    source = "git::https://github.com/CallePuzzle/terraform-google-cloud-run.git?ref=1.1.0"
 
-  metadata {
-    namespace = var.project
-  }
-
-  template {
-    spec {
-      containers {
-        image = var.image
-        dynamic "env" {
-          for_each = var.env_vars
-          content {
-            name  = env.value["name"]
-            value = env.value["value"]
-          }
-        }
-        resources {
-          requests = {
-            cpu    = "100m"
-            memory = "128Mi"
-          }
-          limits = {
-            cpu    = "1000m"
-            memory = "512Mi"
-          }
-        }
-      }
-      container_concurrency = 20
-    }
-  }
-
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
+    project = var.project
+    region = var.region
+    image = var.image
+    run_service_name = var.run_service_name
+    members_can_invoke = [
+        "serviceAccount:${data.google_compute_default_service_account.default.email}",
+    ]
 }
+
 
 resource "google_cloud_run_domain_mapping" "default" {
   name     = var.domain_name
@@ -97,27 +63,6 @@ resource "google_cloud_run_domain_mapping" "default" {
   }
 
   spec {
-    route_name = google_cloud_run_service.default.name
+    route_name = var.run_service_name
   }
-}
-
-data "google_compute_default_service_account" "default" {
-    project = var.project
-}
-
-data "google_iam_policy" "noauth" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "serviceAccount:${data.google_compute_default_service_account.default.email}",
-    ]
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "noauth" {
-  location = google_cloud_run_service.default.location
-  project  = google_cloud_run_service.default.project
-  service  = google_cloud_run_service.default.name
-
-  policy_data = data.google_iam_policy.noauth.policy_data
 }
