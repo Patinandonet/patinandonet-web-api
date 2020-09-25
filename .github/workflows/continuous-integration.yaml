@@ -47,21 +47,37 @@ jobs:
         run: |
           gcloud builds submit -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
 
-      - name: 'Terraform Init'
-        uses: hashicorp/terraform-github-actions@master
+      - uses: hashicorp/setup-terraform@v1
         with:
-          tf_actions_version: ${{ env.TERRAFORM_VERSION }}
-          tf_actions_subcommand: 'init'
-          tf_actions_working_dir: 'deploy'
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          cli_config_credentials_token: ${{ secrets.INT_TF_API_TOKEN }}
+
+      - name: Terraform Init
+        working-directory: 'deploy'
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: 'deploy'
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        working-directory: 'deploy'
+        id: plan
+        run: terraform plan -no-color -out=plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_project: ${{ env.PROJECT_ID }}
+          TF_VAR_region: ${{ env.REGION }}
+          TF_VAR_run_service_name: ${{ env.SERVICE_NAME }}
+          TF_VAR_domain_name: ${{ env.DOMAIN_NAME }}
+          TF_VAR_image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
-      - name: 'Terraform Apply'
-        uses: hashicorp/terraform-github-actions@master
-        with:
-          tf_actions_version: ${{ env.TERRAFORM_VERSION }}
-          tf_actions_subcommand: 'apply'
-          tf_actions_working_dir: 'deploy'
+      - name: Terraform Apply
+        working-directory: 'deploy'
+        id: apply
+        run: terraform apply plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TF_VAR_project: ${{ env.PROJECT_ID }}

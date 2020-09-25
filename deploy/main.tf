@@ -1,7 +1,10 @@
 terraform {
-  backend "gcs" {
-    bucket = "patinando-net-int-tfstate"
-    prefix = "service-api"
+  backend "remote" {
+    organization = "patinando-net"
+
+    workspaces {
+      name = "015-patinandonet-web-api-test"
+    }
   }
 }
 
@@ -9,8 +12,8 @@ terraform {
 ** Provider
 */
 provider "google-beta" {
-  project     = var.project
-  region      = var.region
+  project = var.project
+  region  = var.region
 }
 
 variable "project" {
@@ -35,10 +38,10 @@ variable "image" {
 
 variable "env_vars" {
   type = list(object(
-  {
-    name  = string
-    value = string
-  }
+    {
+      name  = string
+      value = string
+    }
   ))
   default = []
 }
@@ -46,7 +49,7 @@ variable "env_vars" {
 resource "google_cloud_run_service" "default" {
   name     = var.run_service_name
   location = var.region
-  project = var.project
+  project  = var.project
 
   metadata {
     namespace = var.project
@@ -65,11 +68,11 @@ resource "google_cloud_run_service" "default" {
         }
         resources {
           requests = {
-            cpu = "100m"
+            cpu    = "100m"
             memory = "128Mi"
           }
           limits = {
-            cpu = "1000m"
+            cpu    = "1000m"
             memory = "512Mi"
           }
         }
@@ -87,7 +90,7 @@ resource "google_cloud_run_service" "default" {
 resource "google_cloud_run_domain_mapping" "default" {
   name     = var.domain_name
   location = var.region
-  project= var.project
+  project  = var.project
 
   metadata {
     namespace = var.project
@@ -108,9 +111,9 @@ data "google_iam_policy" "noauth" {
 }
 
 resource "google_cloud_run_service_iam_policy" "noauth" {
-  location    = google_cloud_run_service.default.location
-  project     = google_cloud_run_service.default.project
-  service     = google_cloud_run_service.default.name
+  location = google_cloud_run_service.default.location
+  project  = google_cloud_run_service.default.project
+  service  = google_cloud_run_service.default.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
 }
