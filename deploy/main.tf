@@ -52,7 +52,6 @@ module "cloud_run" {
     ]
 }
 
-
 resource "google_cloud_run_domain_mapping" "default" {
   name     = var.domain_name
   location = var.region
