@@ -101,11 +101,15 @@ resource "google_cloud_run_domain_mapping" "default" {
   }
 }
 
+data "google_compute_default_service_account" "default" {
+    project = var.project
+}
+
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
     members = [
-      "serviceAccount:587624933799-compute@developer.gserviceaccount.com",
+      "serviceAccount:${data.google_compute_default_service_account.default.email}",
     ]
   }
 }
