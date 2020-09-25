@@ -51,17 +51,3 @@ module "cloud_run" {
         "serviceAccount:${data.google_compute_default_service_account.default.email}",
     ]
 }
-
-resource "google_cloud_run_domain_mapping" "default" {
-  name     = var.domain_name
-  location = var.region
-  project  = var.project
-
-  metadata {
-    namespace = var.project
-  }
-
-  spec {
-    route_name = var.run_service_name
-  }
-}
