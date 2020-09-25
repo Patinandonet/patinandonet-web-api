@@ -6,12 +6,12 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.INT_PROJECT_ID }}
-  REGION: ${{ secrets.REGION }}
+  REGION: ${{ secrets.INT_REGION }}
   SA_EMAIL: ${{ secrets.INT_SA_EMAIL }}
   SA_KEY: ${{ secrets.INT_SA_KEY }}
 
   SERVICE_NAME: patinando-int-api
-  DOMAIN_NAME: api.patinando.site
+  DOMAIN_NAME: api.test.patinando.net
   TERRAFORM_VERSION: 0.12.8
 
   APP_NAME: patinando-api
