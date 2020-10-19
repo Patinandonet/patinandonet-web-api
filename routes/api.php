@@ -13,3 +13,7 @@ $router->get('/get-activity-types', function () use ($router) {
 $router->get('/get-levels-by-type', function () use ($router) {
     return (new \App\Activities\Level())->getLevelsByType();
 });
+
+$router->get('/get-active-zones', function () use ($router) {
+    return (new \App\Activities\Zone())->getActiveZones();
+});
