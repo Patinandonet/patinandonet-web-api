@@ -1,7 +1,7 @@
 #
 # PHP Dependencies
 #
-FROM composer:1.9 as vendor
+FROM composer:2.0 as vendor
 
 # Could not scan for classes inside "database/seeds" which does not appear to be a file nor a folder
 COPY database/ database/
@@ -13,7 +13,7 @@ RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoload
 #
 # Application
 #
-FROM php:7.4-apache-buster
+FROM php:8.0-apache-buster
 
 LABEL vendor="CallePuzzle ORG"
 LABEL version="0.1"
