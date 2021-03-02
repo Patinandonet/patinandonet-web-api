@@ -27,8 +27,8 @@ class ActivitiesTableFormat
                 $ret[] = [
                     "Día" => $day,
                     "Hora" => $hourColumn[$key],
-                    "Instructor" => $activity->getInstructorNameAttribute(),
                     "Nivel" => $activity->getLevelNameAttribute(),
+                    "Instructor" => $activity->getInstructorNameAttribute(),
                     "Zona" => $activity->getZoneNameAttribute(),
                     "Inscríbete" => $activity->toArray(),
                 ];
